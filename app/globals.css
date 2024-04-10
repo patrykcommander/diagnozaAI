@@ -8,26 +8,46 @@
   --background-end-rgb: 255, 255, 255;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
-}
-
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  background-color: white;
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+.table-p {
+  width: 20rem;
+  height: auto;
+  text-align: center;
+  vertical-align: middle;
+  flex: 1;
+  word-wrap: break-word;
+  font-weight: 600;
+}
+
+.table-checkbox {
+  display: inline-block;
+  height: 2.2em;
+  width: 2.2em;
+  appearance: none;
+  border: 2px solid black;
+  border-radius: 0.3em;
+  outline: none;
+  background-color: antiquewhite;
+  cursor: pointer;
+}
+
+.table-checkbox:checked::before {
+  content: "";
+  display: block;
+  position: relative;
+  left: 14%;
+  top: 14%;
+  height: 1.4em;
+  width: 1.4em;
+  background-color: black;
+  border-radius: 0.15em;
 }
