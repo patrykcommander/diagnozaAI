@@ -27,27 +27,3 @@ body {
   word-wrap: break-word;
   font-weight: 600;
 }
-
-.table-checkbox {
-  display: inline-block;
-  height: 2.2em;
-  width: 2.2em;
-  appearance: none;
-  border: 2px solid black;
-  border-radius: 0.3em;
-  outline: none;
-  background-color: antiquewhite;
-  cursor: pointer;
-}
-
-.table-checkbox:checked::before {
-  content: "";
-  display: block;
-  position: relative;
-  left: 14%;
-  top: 14%;
-  height: 1.4em;
-  width: 1.4em;
-  background-color: black;
-  border-radius: 0.15em;
-}

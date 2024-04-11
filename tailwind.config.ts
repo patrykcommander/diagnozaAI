@@ -12,7 +12,7 @@ const config: Config = {
         "primary-blue": "#2196f3",
         "secondary-blue": "#d6eaf3",
         "table-primary": "#f8f8f8",
-        "table-secondary": "#c8c8c8",
+        "table-secondary": "#d8d8d8",
       }
     },
   },
