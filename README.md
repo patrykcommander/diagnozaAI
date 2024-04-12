@@ -1,4 +1,3 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 A hobby project based on the Diagnoza-AI application.
 The authors' intention was to create a web application for research workers of the Medical University.
 
