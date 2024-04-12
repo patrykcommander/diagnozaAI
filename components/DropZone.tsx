@@ -4,17 +4,17 @@ interface DropZoneProps {
     label: string;
     accept: string;
     name: string;
-    control: any;
+    files: File | null;
+    onChange: (file: File | null) => void;
 }
 
-export default function DropZone({ label, accept, name, control } : DropZoneProps)  {
+export default function DropZone({ label, accept, name, files, onChange } : DropZoneProps)  {
   const [dragActive, setDragActive] = useState<boolean>(false);
   const inputRef = useRef<any>(null);
-  const [files, setFiles] = useState<File | null>(null);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    e.preventDefault();
-    if(e.currentTarget.files) setFiles(e.currentTarget.files[0]);
+    e.preventDefault()
+    if (e.currentTarget.files && onChange) onChange(e.currentTarget.files[0]);
   }
 
   function handleDrop(e: React.DragEvent<HTMLDivElement>) {
@@ -22,7 +22,7 @@ export default function DropZone({ label, accept, name, control } : DropZoneProp
     e.stopPropagation();
     setDragActive(false);
     if (e.dataTransfer.files) {
-        setFiles(e.dataTransfer.files[0]);
+        onChange(e.dataTransfer.files[0]);
     }
   }
 
@@ -45,7 +45,8 @@ export default function DropZone({ label, accept, name, control } : DropZoneProp
   }
 
   function removeFile() {
-    setFiles(null);
+    inputRef.current.value = "";
+    onChange(null);
   }
 
   function openFileExplorer() {
@@ -75,8 +76,8 @@ export default function DropZone({ label, accept, name, control } : DropZoneProp
             onChange={handleChange}
             accept={accept}
         />
-        {
-            !files ? <p >
+        {!files ? (
+          <p>
                 Przeciągnij i upuść lub {" "}
                 <span
                 className="font-bold text-blue-600 cursor-pointer"
@@ -85,8 +86,8 @@ export default function DropZone({ label, accept, name, control } : DropZoneProp
                 <u>Wybierz plik</u>
                 </span>{" "}
                 do wysłania
-            </p> 
-            : 
+          </p> 
+          ) : (
             <div className="flex flex-col items-center">
                 <p className="text-wrap break-all">{files.name}</p>
                 <span 
@@ -95,7 +96,7 @@ export default function DropZone({ label, accept, name, control } : DropZoneProp
                     <u>Usuń</u>
                 </span>
             </div>
-        }
+          )}
       </div>
     </div>
   );

@@ -16,7 +16,7 @@ export default function page() {
           <AddIcon />
       </Fab>
       <Dialog open={open} onClose={() => setOpen(false)} maxWidth="md" fullWidth>
-        <Upload />
+        <Upload closeDialog={() => setOpen(false)} />
       </Dialog>
     </>
   )

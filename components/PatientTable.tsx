@@ -25,7 +25,7 @@ export default function PatientTable() {
         };
     
         fetchData();
-      }, [patients]);
+      }, []);
 
 
     return (

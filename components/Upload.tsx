@@ -1,62 +1,68 @@
-import React from "react";
+"use client"
+
+import React, { useEffect, useState } from "react";
+import { useFormState } from "react-dom";
+import { createPatient } from "@/server/action/createPatient";
 import DropZone from "./DropZone";
-import { SubmitHandler, useForm, Controller } from "react-hook-form";
+import SubmitButton from "./SubmitButton";
+import { useRouter } from "next/navigation";
 
 interface UploadProps {
-    closeDialog?: () => void;
+    closeDialog: () => void;
 }
 
-export default function Upload({ closeDialog } : UploadProps) {
-    const {
-        register,
-        control,
-        handleSubmit,
-    } = useForm({mode: "onSubmit"});
+export default function Upload({ closeDialog }: UploadProps) {
+    const router = useRouter();
+    const [actionStatus, formAction] = useFormState(createPatient, null);
+    const [fileJSON, setFileJSON] = useState<File | null>(null);
+    const [fileCSV, setFileCSV] = useState<File | null>(null);
 
+    useEffect(() => {
+        setFileCSV(null);
+        setFileJSON(null);
+        if(actionStatus !== null && actionStatus.code === 200) setTimeout(() => {
+            closeDialog();
+            router.push("/")
+        }, 1000);
+    }, [actionStatus]);
 
-    const formSubmit = (formData: any) => {        
-        console.log(formData)
+    const handleJsonUpload = (file: File | null) => {
+        if (file) {
+            setFileJSON(file);
+        } else {
+            setFileJSON(null);
+        }
+    };
+
+    const handleCsvUpload = (file: File | null) => {
+        if (file) {
+            setFileCSV(file);
+        } else {
+            setFileCSV(null);
+        }
     };
 
     return (
         <div className="flex flex-col items-center justify-center h-96">
-            <form id="file-upload" className="w-full" onSubmit={handleSubmit(formSubmit)}>
+            <form className="w-full" action={formAction}>
                 <div className="flex flex-row justify-evenly mb-10">
-                    <Controller
-                    name="json"
-                    control={control}
-                    defaultValue={null}
-                    render={({ field }) => (
-                        <DropZone
-                            label="JSON"
-                            accept=".json"
-                            name="json"
-                            control={control}
-                        />
-                    )}
+                    <DropZone
+                        label="JSON"
+                        accept=".json"
+                        name="file-json"
+                        onChange={handleJsonUpload}
+                        files={fileJSON}
                     />
-                    <Controller
-                    name="csv"
-                    control={control}
-                    defaultValue={null}
-                    render={({ field }) => (
-                        <DropZone
-                            label="CSV"
-                            accept=".csv"
-                            name="csv"
-                            control={control}
-                        />
-                    )}
+                    <DropZone
+                        label="CSV"
+                        accept=".csv"
+                        name="file-csv"
+                        onChange={handleCsvUpload}
+                        files={fileCSV}
                     />
                 </div>
+                <SubmitButton actionStatus={actionStatus} isFileProvided={fileJSON === null}/>
             </form>
-            <button
-            className="rounded-md px-4 py-2 bg-black"
-            type="submit"
-            form="file-upload"
-            >
-                <span className="text-white">Submit</span>
-            </button>
         </div>
-    )
+    );
 }

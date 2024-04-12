@@ -47,3 +47,8 @@ export interface wholePatientData {
 }
 
 export type Merged = patientData & bloodExamination;
+
+export interface actionStatus {
+    code: string | number;
+    message: string;
+}
