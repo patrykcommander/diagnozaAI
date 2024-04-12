@@ -1,0 +1,444 @@
+openapi: 3.0.0
+info:
+  title: diagnozaAI API docs
+  version: 0.1.9
+servers:
+  - url: http://localhost:5000 
+    description: Backend servers
+  
+paths:
+  /patients:
+    get:
+      summary: Returns a list of patients and their corresponding .CSV and .JON files.
+      responses:
+        '200':    # status code
+          description: A JSON array of patients
+          content:
+            application/json:
+              schema: 
+                type: array
+                items:
+                  type: object
+                  properties:
+                    patientId:
+                      type: string
+                    createdAt:
+                      type: string
+                      format: date-time
+                    isFullData:
+                      type: boolean
+                      description: True if all of the data has been provided for a patient, false otherwise
+                    tumor_type:
+                      type: string
+                      description: The type of tumor
+                      
+  /patients/patient:
+    get: 
+      summary: Return the patient with a specifid id
+      parameters:
+          - name: nr_pacjenta
+            in: query
+            required: true
+            schema:
+              type: string
+              # format: int64
+          - name: getEmpty
+            in: query
+            required: true
+            description: If set to **true** returns a patient without full data. If set to **false** returns a patient with full data.
+            schema:
+              type: boolean
+            enum:
+              - True
+              - False
+          - name: direction
+            in: query
+            required: false
+            description: The value **-1** will result in looking for a patient with a lower nr_pacjenta, whereas **1** will result in looking for a patient with a bigger nr_pacjenta. Only works if getEmpty is set to **true**
+            enum:
+              - -1
+              - 1
+      responses:
+        '200':
+          description: JSON object of a patient
+          content:
+            application/json:
+              example:
+                - id: 0
+                  nr_pacjenta: 60e00kk5eef9l32602a3459cfd9fc1eba0
+                  data_dodania: 21/11/2023 20:09:31
+                  dane_pacjenta: file in json format
+                  wirowka: file in json format
+                  wirowka_file_name: string
+                  patientData_file_name: string
+                  pelne_dane: boolean
+              schema: 
+                type: object
+                properties:
+                  id:
+                      type: integer
+                  nr_pacjenta:
+                    type: string
+                  data_dodania:
+                    type: string
+                    format: date-time
+                    description: Returned in a format of Day/Monty/Year Hour\:Minutes\:Seconds
+                  dane_pacjenta:
+                    type: object
+                    description: JSON file of patient data
+                  wirowka:
+                    type: object
+                    description: CSV in a JSON format of blood examination
+                  wirowka_file_name:
+                    type: string
+                  patientData_file_name:
+                    type: string
+                  pelne_dane:
+                    type: boolean
+                    description: True if all of the data has been provided for a patient, false otherwise
+        '404':
+          description: No patient found with bigger or smaller nr_pacjenta with empty data | No patient found with this nr_pacjenta
+          content:
+            application/json:
+              example:
+                - status: 404
+                  message: "No patient with nr_pacjenta lower or bigger than the one in request"
+              schema: 
+                type: object
+                properties:
+                  status:
+                    type: integer
+                    description: Status code
+                  message:
+                    type: string
+    post: 
+      summary: Creates a new patient object with corresponding .JSON and .CSV files 
+      parameters:
+          - name: file-json
+            description: .JSON file 
+            in: formData
+            required: true
+            schema:
+              type: file
+          - name: file-csv
+            description: .CSV file 
+            in: formData
+            required: false
+            schema:
+              type: file
+      responses:
+        '250':
+          description: Patient created from both files
+        '251':
+          description: Patient created only with .json data
+        '550':
+          description: The JSON file was not provided, therefore Patient object can not be created
+        '551':
+          description: Error while creating the Patient object
+        '552':
+          description: Patient creation failed - JSON file error
+  
+  /patients/patient/{nr_pacjenta}/data/blood:
+    get:
+      summary: Fetches first Wirowka object of a patient or a subset of attributes
+      parameters:
+            - name: nr_pacjenta
+              in: path
+              required: true
+              schema:
+                type: string
+            - name: attributes
+              in: query
+              required: false
+              schema:
+                type: string
+              description: can define subset of attributes to return, for example - figo_stage,grade
+      responses:
+        '200':
+          description: Wirowka object or subset of attributes
+          content:
+            application/json:
+              example:
+                - id: 4
+                  patient_primary_key: 18
+                  csv_to_json: "{\"id\":1,\"marka\":\"Marcedes\",\"rok\":1997,\"silnik\":2.4,\"vin\":\"17263yhs\",\"wheels\":4,\"doors\":5,\"onwer_name\":\"Patryk\",\"owner_surname\":\"Orkisz\"}"
+                  file_name: mock.csv
+                  grade: AAA
+                  figo_stage: BBB
+                  array_qpcr: CCC
+                  box_position: DDD
+                  collection_date: EEE
+                  collection_time: FFF
+                  metastasis: GGG
+                  nodes: null
+                  processing_date: null
+                  processing_time: null
+                  reverse_transcription_date: null
+                  rna_isolation_concentration: null
+                  rna_isolation_date: null
+                  rna_tape_station_date: null
+                  sample_id: null
+                  tube_qpcr: null
+                  tumor: null
+              schema: 
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  patient_primary_key:
+                    type: integer
+                  csv_to_json:
+                    type: object
+                    description: CSV in a JSON format of blood examination
+                  file_name:
+                    type: string
+                  array_qpcr:
+                    type: string
+                  box_position:
+                    type: string
+                  collection_date:
+                    type: string
+                  collection_time:
+                    type: string
+                  metastasis:
+                    type: string
+                  nodes: 
+                    type: string
+                  processing_date:
+                    type: string
+                  processing_time:
+                    type: string
+                  reverse_transcription_date:
+                    type: string
+                  rna_isolation_concentration:
+                    type: string
+                  rna_isolation_date:
+                    type: string
+                  rna_tape_station_date:
+                    type: string
+                  sample_id:
+                    type: string
+                  tube_qpcr:
+                    type: string
+                  tumor:
+                    type: string
+        '404':
+          description: Could not find Wirowka object for patient
+        '400':
+          description: Error while looking for specified attributes
+
+    post:
+      summary: Creates a new Wirowka object from .CSV file or updates the existing entry in database
+      parameters:
+            - name: nr_pacjenta
+              in: path
+              required: true
+              schema:
+                type: string
+            - name: file-csv
+              description: .CSV file 
+              in: formData
+              required: false
+              schema:
+                type: file
+            - name: updated
+              in: query
+              required: false
+              schema:
+                type: string
+              description: if parameter sent as update=True or true, the body from request is used to update the database entry for CSV file
+      requestBody:
+          required: false
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  attributes:
+                    c1: 
+                      type: string
+                      example: "test c1"
+                    c2:
+                      type: integer
+                      example: 60
+                example: {'c1': "testc1", 'c2': 60}
+          description: "Example of how to define a subset of attributes to update"
+
+      responses:
+          '201':
+            description: Object wirowka has been added to patient
+          '400':
+            description: Error while creating Wirowka object | CSV file has not been provided | Error while updating Wirowka object | Update parameter or update attributes was not provided
+          '404':
+            description: Patient with nr_pacjenta not found
+
+    patch:
+      summary: Updates the existing Wirowka object
+      parameters:
+            - name: nr_pacjenta
+              in: path
+              required: true
+              schema:
+                type: integer
+      responses:
+          '200':
+            description: Object wirowka has been deleted
+          '400':
+            description: Error while updating Wirowka object
+          '404':
+            description: Patient with nr_pacjenta not found
+
+    delete:
+      summary: Deletes the Wirowka / blood_examine object
+      parameters:
+            - name: nr_pacjenta
+              in: path
+              required: true
+              schema:
+                type: string
+      responses:
+          '200':
+            description: Object wirowka has been deleted
+          '400':
+            description: Error while deleting Wirowka object
+
+
+  /patients/patient/{nr_pacjenta}/data:
+
+    get:
+      summary: Fetches the whole first PatientData object of a patient, or subset of attributes
+      parameters:
+            - name: nr_pacjenta
+              in: path
+              required: true
+              schema:
+                type: string
+            - name: attributes
+              in: query
+              required: false
+              schema:
+                type: string
+              description: can define subset of attributes to return, for example - plt,ca125,age
+      responses:
+        '200':
+          description: PatientData object or subset of attributes
+          content:
+            application/json:
+              example:
+                - id: 8
+                  patient_primary_key: 18
+                  file_name: 218.json
+                  plt: 269
+                  age: 53
+                  ca125: 110
+                  tumor_type: Mięśniak gładkokomórkowy macicy nie określony
+                  histology: W wycinkach ze ściany trzonu macicy...
+                  operation_date: Tue 14 Nov 2017 00:00:00 GMT
+                  menopausal_status: null
+                - plt: 269
+                  age: 53
+                  ca125: 110
+                  sample_id: 
+                  tumor_type: Mięśniak gładkokomórkowy macicy nie określony
+              schema: 
+                type: object
+                properties:
+                  id: 
+                    type: integer
+                  patient_primary_key:
+                    type: integer
+                  file_name:
+                    type: string
+                  plt:
+                    type: float
+                  age:
+                    type: integer
+                  ca125:
+                    type: float
+                  tumor_type:
+                    type: string
+                  histology:
+                    type: string
+                  operation_date:
+                    type: string
+                    format: date-time
+                  menopausal_status:
+                    type: string
+                  
+        '404':
+          description: Could not find PatientData object for patient or subset of attributes
+        '400':
+          description: Error while looking for specified attributes
+
+    post:
+      summary: Updates a PatientData object from .JSON file
+      parameters:
+            - name: nr_pacjenta
+              in: path
+              required: true
+              schema:
+                type: string
+            - name: file-json
+              description: .JSON file 
+              in: formData
+              required: required
+              schema:
+                type: file
+      responses:
+          '200':
+            description: Object PatientData has been updated
+          '400':
+            description: Server did not receive JSON file | Error while creating PatientData object for patient 
+          '404':
+            description: Patient with nr_pacjenta not found
+
+    patch:
+      summary: Updates the whole existing PatientData object or a subset of attributes
+      parameters:
+        - name: nr_pacjenta
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+          required: false
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  attributes:
+                    age: 
+                      type: integer
+                      example: 65
+                    histology:
+                      type: string
+                      example: A - ..........
+                    tumor_type:
+                      type: string
+                      example: Nowotwór niezłośliwy
+                example: {'age': 65, 'histology': "A - ..........", "tumor_type": "Nowotwór niezłośliwy"}
+          description: "Example of how to define a subset of attributes to update"
+
+      responses:
+          '200':
+            description: Object PatientData has been updated
+          '400':
+            description: Error while updating PatientData object
+          '404':
+            description: Patient with nr_pacjenta not found
+
+    delete:
+        summary: Deletes the PatientData object
+        parameters:
+              - name: nr_pacjenta
+                in: path
+                required: true
+                schema:
+                  type: string
+        responses:
+            '200':
+              description: Object PatientData has been deleted
+            '400':
+              description: Error while deleting PatientData object
+      

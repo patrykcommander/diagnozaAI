@@ -1,0 +1,19 @@
+'''
+Notatka
+
+w cmd python importujemy app, db
+
+app.app_context().push()
+
+importujemy modele tabel baz danych z models.py
+
+db.create_all()
+
+tworzymy patient_1 = Patient(nr_pacjenta='abcdef')
+
+db.session.add(patient_1)
+db.session.commit()
+
+dopiero wtedy można stworzyć obiekty wchodzące w relacje z obiektem pacjenta -> musi istnieć obiekt pacjenta w db, aby dodać obiekty Wirowka i Patient_data
+'''
+
