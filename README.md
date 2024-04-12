@@ -13,7 +13,7 @@ docker-compose up
 ```bash
 source backend/venv/Scripts/activate
 ```
-- run backend development server
+- run Backend development server
 ```bash
 python backend/run.py
 ```
