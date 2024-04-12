@@ -31,7 +31,7 @@ swaggerui_blueprint = get_swaggerui_blueprint(
 
 app.register_blueprint(swaggerui_blueprint)
 
-from backend.src.routes.inProgress import playground
+from src.routes.inProgress import playground
 from src.routes.patients import patients_routes
 
 '''
