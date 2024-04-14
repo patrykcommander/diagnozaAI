@@ -6,10 +6,7 @@ export interface patient {
 }
 
 export interface patientData {
-    id: number;
-    patient_primary_key: number;
-    file_name: string | null;
-    src_json: any; // Assuming JSON structure, you may need to define a specific type
+    json_file_name: string | null;
     age: number | null;
     plt: number | null;
     histology: string | null;
@@ -20,11 +17,7 @@ export interface patientData {
 }
 
 export interface bloodExamination {
-    id: number;
-    patient_primary_key: number;
-    file_name?: string;
-    csv_binary?: ArrayBuffer | null;
-    csv_to_json?: Record<string, unknown> | null;
+    csv_file_name?: string;
     sample_id?: string | null;
     grade?: string | null;
     figo_stage?: string | null;
@@ -46,9 +39,16 @@ export interface bloodExamination {
 }
 
 export interface wholePatientData {
-    nr_pacjenta:              string, 
-    data_dodania:             string, 
-    dane_pacjenta:            patientData,
-    pelne_dane:               boolean,
-    wirowka:                  bloodExamination
+    nr_pacjenta:    string, 
+    data_dodania:   string, 
+    dane_pacjenta:  patientData,
+    pelne_dane:     boolean,
+    wirowka?:       bloodExamination
+}
+
+export type Merged = patientData & bloodExamination;
+
+export interface actionStatus {
+    code: string | number;
+    message: string;
 }

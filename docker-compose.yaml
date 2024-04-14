@@ -1,0 +1,60 @@
+version: "3.8"
+name: diagnoza_ai
+
+services:
+  postgreSQL:
+    image: postgres:13.13
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_PASSWORD=${postgres_password}
+      - POSTGRES_USER=${postgres_username}
+      - POSTGRES_DB=diagnozaAI
+    networks:
+      diagnoza_network:
+        ipv4_address: 192.168.250.10
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - postgres_data_snapshot:/snapshots
+
+  pgadmin:
+    image: dpage/pgadmin4:6.21
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${pgadmin_login}
+      PGADMIN_DEFAULT_PASSWORD: ${pgadmin_password}
+    ports:
+      - 5050:80
+    networks:
+      diagnoza_network:
+        ipv4_address: 192.168.250.20
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+
+# ------------------- Define docker internal-network ---------------------------- #
+networks:
+  diagnoza_network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.250.0/24
+
+volumes:
+  postgres_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${postgres_data_path}
+  postgres_data_snapshot:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${postgres_data_snapshot_path}
+  pgadmin_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${pgadmin_data_path}

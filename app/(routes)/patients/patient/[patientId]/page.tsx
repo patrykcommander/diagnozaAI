@@ -13,7 +13,7 @@ export default async function patientPage({ params }: {params: {patientId: strin
       <div className="flex items-center justify-center">
         <div className="flex flex-row justify-between max-w-7xl w-full mt-10">
           <div>
-            <p className="text-2xl font-semibold">Patient: {patientId}</p>
+            <p className="text-2xl font-semibold">Pacjent: {patientId}</p>
           </div>
           <div className="flex gap-20">
             <ServerActionButton color="blue" action={() => switchPatient(patientId, -1)}>

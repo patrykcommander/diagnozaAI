@@ -4,4 +4,4 @@ export default function root() {
   return (
     redirect("/patients")
   );
-};
+}

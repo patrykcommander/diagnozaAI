@@ -8,7 +8,7 @@ import clsx from "clsx"
 interface MenuLinkProps {
     label: string,
     href: string,
-};
+}
 
 export const MenuLink = ({label, href} : MenuLinkProps ) => {
     const pathName = usePathname();

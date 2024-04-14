@@ -4,7 +4,7 @@ import clsx from "clsx"
 interface ButtonProps {
     color: "blue" | "grey";
     children?: React.ReactNode;
-    action?: () => {}
+    action?: () => unknown
 }
 
 export default function ServerActionButton({ color, children, action } : ButtonProps) {

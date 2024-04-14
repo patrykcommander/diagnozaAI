@@ -4,7 +4,7 @@ import React from "react"
 import { useRouter } from "next/navigation";
 import { patient } from "@/types"
 import clsx from "clsx";
-import Checkbox from "./Checkbox";
+import Checkbox from '@mui/material/Checkbox';
 
 interface patientCardProps {
   keyVal: number;
@@ -28,7 +28,7 @@ export default function PatientCard({ keyVal, patientInfo } : patientCardProps) 
         <p className="px-4 py-5 table-p">{patientInfo.patientId}</p>
         <p className="px-4 py-5 table-p">{patientInfo.createdAt}</p>
         <p className="px-4 py-5 table-p">{patientInfo.tumorType || "Nie odczytano z pliku JSON"}</p>
-        <p className="px-4 py-5 table-p"><Checkbox isChecked={patientInfo.isFullData}/></p>
+        <p className="px-4 py-5 table-p"><Checkbox size="large" color="primary" checked={patientInfo.isFullData}/></p>
     </div>
   )
 }
