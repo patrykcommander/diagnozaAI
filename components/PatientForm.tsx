@@ -5,7 +5,7 @@ import React from "react";
 interface PatientFormProps {
     patientData: patientData;
     patientBloodExamination: bloodExamination | null;
-};
+}
 
 interface FormRowProps {
     firstItem: {
@@ -14,7 +14,7 @@ interface FormRowProps {
         fieldName: string;
     };
     multiline: boolean;
-};
+}
 
 function FormRow({ firstItem }: FormRowProps) {
     return (
@@ -79,7 +79,7 @@ export default function PatientForm({ patientData, patientBloodExamination } : P
             <div>
                 <Grid container spacing={4}>
                     <Grid container item rowSpacing={2} columnSpacing={5}>
-                        {Object.entries(merged).map(([key, value], index) => (
+                        {Object.entries(merged).map(([key, value], _) => (
                             !key.includes("file_name") && !key.includes("histology") &&  
                             <FormRow 
                             firstItem={{
@@ -108,4 +108,4 @@ export default function PatientForm({ patientData, patientBloodExamination } : P
             </div>   
         </div>
     )
-};
+}

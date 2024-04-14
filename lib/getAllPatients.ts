@@ -5,7 +5,7 @@ export const getAllPatients = async () => {
     try {
         const patients = await axios.get("/patients").then((response) => {
             if (response.status === 200) {
-                let parsedPatients = response.data
+                const parsedPatients = response.data
                 return parsedPatients.map((patient: string) => {
                     return JSON.parse(patient)
                 })

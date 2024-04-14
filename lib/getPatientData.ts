@@ -15,9 +15,9 @@ export default async function getPatientData(patientId: string) {
         } 
         else if (response.status === 400) {
             return [];
-        };
+        }
         
     } catch (error) {
         console.error("Error while fetching the patientData");
-    };
-};
+    }
+}
