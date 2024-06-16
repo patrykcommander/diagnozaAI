@@ -8,12 +8,14 @@ const config: Config = {
   ],
   theme: {
     extend: {
-      colors : {
-        "primary-blue": "#2196f3",
-        "secondary-blue": "#d6eaf3",
+      colors: {
+        "primary-blue": "	#000080",
+        "secondary-blue": "	#0000FF",
         "table-primary": "#f8f8f8",
         "table-secondary": "#d8d8d8",
-      }
+        "primary-grey": "#36454F",
+        "secondary-grey": "#899499",
+      },
     },
   },
   plugins: [],

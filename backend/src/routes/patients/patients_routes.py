@@ -1,5 +1,5 @@
 from src import app, session
-from flask import request, Response, send_file
+from flask import request, Response
 from io import BytesIO, StringIO
 
 from src.functions.storage.wholePatientObj_db import *
@@ -94,7 +94,7 @@ def manageJSON(nr_pacjenta):
         return PatientData.delete(primary_key)
 
 
-@app.route("/patients/patient", methods=["GET", "POST"])
+@app.route("/patients/patient", methods=["GET", "POST", "PATCH"])
 def managePatient():
     if request.method == "POST":
         files = request.files
@@ -113,6 +113,27 @@ def managePatient():
         output = createWholePatientObj(src_csv, src_json)
 
         return output[0], output[1]
+    
+    elif request.method == "PATCH":
+        files = request.files
+        nr_pacjenta = request.args.get("nr_pacjenta")
+        try: 
+            primary_key = session.query(Patient).filter_by(nr_pacjenta=nr_pacjenta).first().id
+        except:
+            return {"message": f"Patient with {nr_pacjenta} not found"}, 404
+        
+        keys = files.keys()
+
+        '''if('file-csv' in keys):
+            src_csv = files['file-csv']'''
+        
+        if('file-json' in keys):
+            src_json = files['file-json']
+            print(primary_key)
+            attributes = mapJSONtoPatientData(src_json)
+            status_json = PatientData.update(primary_key, attributes)
+        
+        return {"msg": "Test"}, 200
 
     elif request.method == "GET":
         args = request.args.to_dict()
