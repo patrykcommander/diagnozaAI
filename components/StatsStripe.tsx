@@ -1,18 +1,15 @@
 import React from "react";
-import { Patient } from "@/types";
 interface StatsProps {
-  patients: Patient[];
+  patientsCount: number | [];
+  emptyData: number | [];
+  fullData: number | [];
 }
 
-export default function StatsStripe({ patients }: StatsProps) {
-  const patientsCount = patients.length;
-  const isFullDataCount = patients.filter(
-    (patient) => patient.isFullData === true
-  ).length;
-  const isEmptyDataCount = patients.filter(
-    (patient) => patient.isFullData === false
-  ).length;
-
+export default function StatsStripe({
+  patientsCount,
+  emptyData,
+  fullData,
+}: StatsProps) {
   return (
     <div className="flex justify-center">
       <div className="px-4 py-2 h-12 w-auto bg-primary-blue mt-5 rounded-md shadow-md text-xl">
@@ -21,10 +18,10 @@ export default function StatsStripe({ patients }: StatsProps) {
             Liczba dodanych pacjentów: {patientsCount}
           </p>
           <p className="text-white font-semibold">
-            Pacjenci z pełnymi danymi: {isFullDataCount}
+            Pacjenci z pełnymi danymi: {emptyData}
           </p>
           <p className="text-white font-semibold">
-            Pacjenci z niepełnymi danymi: {isEmptyDataCount}
+            Pacjenci z niepełnymi danymi: {fullData}
           </p>
         </div>
       </div>

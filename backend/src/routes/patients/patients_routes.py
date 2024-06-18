@@ -154,17 +154,34 @@ def managePatient():
 
 @app.route('/patients', methods=['GET'])
 def getAllPatients():
-    return Patient.fetchAllPatients(), 200
+    returnCount = request.args.get('all')
+    if returnCount != None or returnCount == "true":
+        length, status = Patient.getLength()
+        return Response(response=str(length), status=status)
+
+    page = request.args.get('page') 
+    if page == None:
+        page = 1
+    else:
+        page = int(page)
+
+    elementsPerPage = request.args.get('elementsPerPage') 
+    if elementsPerPage == None:
+        elementsPerPage = 10
+    else:
+        elementsPerPage = int(elementsPerPage)
+
+    return Patient.fetchPaginatedPatients(page, elementsPerPage), 200
+
+@app.route('/patients/statistics', methods=["GET"])
+def getPatientsStats():
+    statistics, status = Patient.getStats()
+    return statistics, status
 
 
 @app.route("/patients/patient/<nr_pacjenta>/download")
 def saveCsv(nr_pacjenta):
-    #args = request.args.to_dict()
-    #nr_pacjenta = args['nr_pacjenta']
-
     csvFormat = Patient.savePatientToCsv(nr_pacjenta=nr_pacjenta).getvalue().encode('utf8')
-
-    
     response = Response(
         response        = csvFormat.getvalue(),
         content_type    = 'text/csv',

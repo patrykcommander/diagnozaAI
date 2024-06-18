@@ -1,15 +1,26 @@
-import { Patient } from "@/types";
+import { Patient, PatientsStats } from "@/types";
 import React from "react";
 import PatientCard from "./PatientCard";
-import { getAllPatients } from "@/lib/getAllPatients";
 import StatsStripe from "./StatsStripe";
+import { getPatients } from "@/lib/getPatients";
+import getPatientsStats from "@/lib/getPatientsStats";
 
-export default async function PatientTable() {
-  const patients: Patient[] = await getAllPatients();
+export default async function PatientTable({
+  currentPage,
+}: {
+  currentPage: number;
+}) {
+  const patients: Patient[] = await getPatients(currentPage);
+  const { patientsCount, emptyData, fullData }: PatientsStats =
+    await getPatientsStats();
 
   return (
     <>
-      <StatsStripe patients={patients} />
+      <StatsStripe
+        patientsCount={patientsCount}
+        emptyData={emptyData}
+        fullData={fullData}
+      />
       <div className="flex justify-center">
         <div className="flex-row w-1/2">
           <div className="flex items-center justify-center mt-14">
