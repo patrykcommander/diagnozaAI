@@ -1,28 +1,29 @@
 import axios from "@/cfg";
 import { PAGINATION_TOTAL_ELEMENTS } from "@/config/PatientsPage";
-import { Patient } from "@/types";
 
-export const getPatients = async (currentPage: number) => {
+export const getPatients = async (
+  currentPage: number,
+  fullDataFilter: string
+) => {
   try {
-    const patients = await axios
-      .get(
-        `/patients?page=${currentPage}&elementsPerPage=${PAGINATION_TOTAL_ELEMENTS}`
-      )
-      .then((response) => {
-        if (response.status === 200) {
-          const parsedPatients = response.data;
-          return parsedPatients.map((patient: string) => {
-            return JSON.parse(patient);
-          });
-        } else {
-          console.error("Wrong response status: ", response.status);
-          return [];
-        }
-      });
+    const res = await axios({
+      method: "GET",
+      url: "http://localhost:5000/patients",
+      params: {
+        page: currentPage,
+        elementsPerPage: PAGINATION_TOTAL_ELEMENTS,
+        fullData: fullDataFilter,
+      },
+    });
 
-    return patients as Patient[];
+    if (res.status === 200) {
+      const parsedPatients = res.data;
+      return parsedPatients.map((patient: string) => {
+        return JSON.parse(patient);
+      });
+    }
   } catch (error) {
-    console.error("Error while fetching patients: ", error);
+    console.error("Error while fetching patients");
     return [];
   }
 };

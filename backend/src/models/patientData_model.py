@@ -55,17 +55,13 @@ class PatientData(db.Model):
             return empty_dict
 
 
-    def getAttributes(patient_primary_key: int, attribute: str):  #attributes: list
+    def getAttributes(patient_primary_key: int, attribute: str):
         try:
-            patientData = session.query(PatientData).filter_by(id=patient_primary_key).first()
-            #patientData = patientData.as_dict()
-            #patientData = dict((key, value) for key, value in patientData.items() if key in attributes)
+            patientData = PatientData.query.filter_by(patient_primary_key=patient_primary_key).first()
             return getattr(patientData, attribute)
-        except: 
+        except:
             return None
         
-
-
     def update(patient_primary_key: int, attributes: dict): # dodać zerowanie innych parametrów, których nie ma w attributes!
         # same function used for substituting JSON file and updaing selected attributes, that is why there is a lot of fuss abour nr_pacjenta
         # nr_pacjenta only changed when new JSON file is received

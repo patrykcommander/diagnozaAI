@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Pagination } from "@mui/material";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 interface PaginationProps {
   currentPage: number;
@@ -15,6 +15,7 @@ export default function MyPagination({
   totalElements,
   elementsPerPage,
 }: PaginationProps) {
+  const searchParams = useSearchParams();
   const pathname = usePathname();
   const router = useRouter();
   let count: number;
@@ -26,7 +27,10 @@ export default function MyPagination({
   }
 
   const handleChange = (e: React.ChangeEvent<unknown>, value: number) => {
-    router.push(`${pathname}?page=${value}`);
+    const newSearchParams = new URLSearchParams(searchParams);
+    newSearchParams.set("page", value.toString());
+
+    router.push(`${pathname}?${newSearchParams.toString()}`);
   };
 
   return (

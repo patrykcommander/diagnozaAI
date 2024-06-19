@@ -3,6 +3,7 @@ from src.models.patientData_model import PatientData
 from src.models.patient_model import Patient
 from src.models.wirowka_model import Wirowka
 import argparse
+from flask_cors import CORS
 
 parser = argparse.ArgumentParser(description="Create new tables in databse after the schema change")
 parser.add_argument('--recreate',
@@ -16,10 +17,11 @@ parser.add_argument('--debug',
 
 args = parser.parse_args()
 
-if __name__ == "__main__":    
+if __name__ == "__main__":
+    CORS(app) 
     app.app_context().push()
     if args.recreate == True:
         db.drop_all()
         print("Dropping all tables")
     db.create_all()
-    app.run(debug=args.debug)
+    app.run(port=5000, debug=args.debug)

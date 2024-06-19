@@ -4,6 +4,7 @@ import getPatientData from "@/lib/getPatientData";
 import PatientForm from "./PatientForm";
 import { PatientData, wholePatientData } from "@/types";
 import ChangePatient from "./ChangePatient";
+import DeletePatientButton from "./DeletePatientButton";
 
 export default async function PatientInfo({
   patientId,
@@ -44,6 +45,7 @@ export default async function PatientInfo({
         </div>
         <div className="flex fixed top-1/2 right-10 m-5">
           <div className="flex flex-col justify-end gap-10">
+            <DeletePatientButton />
             <FileForm accept=".json, .csv" nr_pacjenta={patientId}>
               <p className="truncate w-full">
                 Zmień plik

@@ -13,11 +13,17 @@ export default async function PatientsPage({
   searchParams,
 }: PatientsPageProps) {
   const currentPage = Number(searchParams["page"] ?? 1);
-  const totalElements = await getPatientsCount();
+  const fullDataFilter = (searchParams["fullData"] ?? "all") as string;
+
+  const totalElements = await getPatientsCount(fullDataFilter);
+
   return (
     <>
       <Suspense fallback={<div>Loading....</div>}>
-        <PatientTable currentPage={currentPage} />
+        <PatientTable
+          currentPage={currentPage}
+          fullDataFilter={fullDataFilter}
+        />
       </Suspense>
       <MyPagination
         currentPage={currentPage}

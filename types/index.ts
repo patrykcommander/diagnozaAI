@@ -58,3 +58,8 @@ export type PatientsStats = {
   emptyData: number;
   fullData: number;
 };
+
+export type filterOptions = {
+  label: string;
+  value: string;
+};

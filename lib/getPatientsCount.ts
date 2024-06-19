@@ -1,12 +1,13 @@
 import axios, { AxiosResponse } from "axios";
 
-export default async function getPatientsCount() {
+export default async function getPatientsCount(fullDataFilter: string) {
   try {
     const response: AxiosResponse = await axios({
       method: "GET",
       url: "http://localhost:5000/patients",
       params: {
         all: "true",
+        fullData: fullDataFilter,
       },
     });
 
