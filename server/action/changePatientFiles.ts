@@ -5,7 +5,7 @@ import axios from "@/cfg";
 export const changePatientFiles = async (state: any, formData: FormData) => {
   let newFormData: FormData = new FormData();
   const nr_pacjenta = formData.get("nr_pacjenta");
-  console.log(nr_pacjenta);
+
   try {
     formData.forEach((entry) => {
       if (typeof entry === "object") {

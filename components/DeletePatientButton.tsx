@@ -18,5 +18,12 @@ export default async function DeletePatientButton() {
     }
   };
 
-  return <button onClick={handleDelete}>Delete</button>;
+  return (
+    <button
+      className="w-4- h-10 rounded-md bg-red-600 border-2 text-white font-semibold text-lg"
+      onClick={handleDelete}
+    >
+      Delete
+    </button>
+  );
 }

@@ -81,11 +81,11 @@ def manageJSON(nr_pacjenta):
 
 @app.route("/patients/patient", methods=["GET", "POST", "PATCH", "DELETE"])
 def managePatient():
+    nr_pacjenta = request.args.get("nr_pacjenta")
+
     if request.method == "GET":
         args = request.args.to_dict()
         keys = (request.args.to_dict()).keys()
-
-        nr_pacjenta = request.args.get("nr_pacjenta")
 
         if 'getEmpty' in keys:
             getEmpty = True if args['getEmpty'].lower() == 'true' else False
@@ -119,6 +119,7 @@ def managePatient():
         return output[0], output[1]
     
     elif request.method == "PATCH":
+        
         files = request.files
         try: 
             primary_key = session.query(Patient).filter_by(nr_pacjenta=nr_pacjenta).first().id
