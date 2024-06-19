@@ -24,6 +24,7 @@ export default function Upload({ closeDialog }: UploadProps) {
       setTimeout(() => {
         closeDialog();
         router.push("/");
+        router.refresh();
       }, 1000);
   }, [actionStatus]);
 

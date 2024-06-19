@@ -31,7 +31,6 @@ export const changePatientFiles = async (state: any, formData: FormData) => {
 
     return { code: response.status, message: response.data.message };
   } catch (error: any) {
-    console.error(error);
     return { code: "", message: error.response.data.message };
   }
 };

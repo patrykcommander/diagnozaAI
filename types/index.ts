@@ -52,3 +52,14 @@ export interface ActionStatus {
   code: string | number;
   message: string;
 }
+
+export type PatientsStats = {
+  patientsCount: number;
+  emptyData: number;
+  fullData: number;
+};
+
+export type filterOptions = {
+  label: string;
+  value: string;
+};

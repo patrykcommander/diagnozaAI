@@ -3,7 +3,6 @@ from datetime import datetime
 from sqlalchemy import Boolean
 import json , csv, io
 
-
 class Patient(db.Model):
     __tablename__ = "patient"
     id = db.Column(db.Integer, primary_key=True)
@@ -22,55 +21,83 @@ class Patient(db.Model):
             patientObj = Patient(nr_pacjenta=nr_pacjenta)
             session.add(patientObj)
             session.commit()
-            print("test")
             return patientObj
         except:
             session.rollback()
             return {"message": "Error while creating the Patient object"}, 400
         
-    
-    def fetchAllPatients():
+    def deletePatient(nr_pacjenta: str):
+        try:
+            print(nr_pacjenta)
+            patient = session.query(Patient).filter_by(nr_pacjenta=nr_pacjenta).first()
+            print(patient)
+            session.query(Patient).filter_by(nr_pacjenta=nr_pacjenta).delete()
+            session.commit()
+            return {"msg": "OK"}, 200
+        except:
+            return {"msg": "FAILED"}, 503
+
+    def fetchPaginatedPatients(page=1, elementsPerPage=10, fullDataFilter="all"):
         from src.models.patientData_model import PatientData
-        patients = Patient.query.all()
-        allInJSON = []
+        try:
+            patients = None
+            skip = (page - 1) * elementsPerPage
 
-        for patient in patients:
-            patientDict =   { 
-                                "patientId":        patient.nr_pacjenta, 
-                                "createdAt":        patient.data_dodania.strftime("%d/%m/%Y, %H:%M:%S"), 
-                                #"dane pacjenta":   "" ,
-                                #"wirowka":         "", 
-                                "isFullData":       patient.pelne_dane,
-                            }
-            
-            try:
-                patientDict["tumorType"] = PatientData.getAttributes(patient.id, attribute="tumor_type")
-            except:
-                patientDict["tumorType"] = None
-            '''
-            try:
-                patientDict["dane pacjenta"] = patient.patient_json[0].src_json
-            except:
-                patientDict["dane pacjenta"] = None
-            try:
-                patientDict["wirowka"] = patient.patient_csv[0].csv_to_json
-            except:
-                patientDict["wirowka"] = None
-            '''
-
-            temp = json.dumps(patientDict)
-
-            allInJSON.append(temp)
-
-        return allInJSON
+            if fullDataFilter != "all":
+                print(fullDataFilter)
+                patients = session.query(Patient).filter_by(pelne_dane=fullDataFilter).offset(skip).limit(elementsPerPage)
+            else:
+                patients = session.query(Patient).offset(skip).limit(elementsPerPage)
+            allInJSON = []
 
 
-    def fetchPatient(nr_pacjenta: str, fetchEmpty: bool, direction: int):                          ################ CHANGE FILTER METHOD!!!!! ##################
+            for patient in patients:
+                patientDict =   { 
+                                    "patientId":        patient.nr_pacjenta, 
+                                    "createdAt":        patient.data_dodania.strftime("%d/%m/%Y, %H:%M:%S"), 
+                                    "isFullData":       patient.pelne_dane,
+                                }
+                try:
+                    patientDict["tumorType"] = PatientData.getAttributes(patient.id, attribute="tumor_type")
+                except:
+                    patientDict["tumorType"] = None
+
+                temp = json.dumps(patientDict)
+                allInJSON.append(temp)
+
+            return allInJSON, 200
+        except:
+            return None, 503
+    
+    def getLength(fullDataFilter="all"):
+        try:
+            patientsCount = None
+            if fullDataFilter == "all":
+                patientsCount = session.query(Patient).count()
+            else:
+                patientsCount = session.query(Patient).filter_by(pelne_dane=fullDataFilter).count()
+
+            return patientsCount, 200
+        except:
+            return None, 404
+    
+    def getStats():
+        try:
+            patientsCount, _ = Patient.getLength()
+            emptyData = Patient.query.filter(Patient.pelne_dane == False).count()
+            fullData = patientsCount - emptyData
+            return {
+                    "patientsCount": patientsCount,
+                    "emptyData": emptyData,
+                    "fullData": fullData
+                }, 200
+        except:
+            return None, 404
+
+
+    def fetchPatient(nr_pacjenta: str, fetchEmpty: bool, direction: int):
         from src.models.patientData_model import PatientData
         from src.models.wirowka_model import Wirowka
-        #engine = create_engine(DB_URL)
-        #session = Session(engine)
-        #patient_id = session.query(Patient).filter_by(nr_pacjenta = int(nr_pacjenta)).first().id
 
         patient = Patient.query.filter(Patient.nr_pacjenta == nr_pacjenta).first()
         
@@ -81,8 +108,7 @@ class Patient(db.Model):
             if patient:
                 patient_primary_key = patient.id
                 if direction == -1:
-                    patient = Patient.query.filter((Patient.id < patient_primary_key) & (Patient.pelne_dane == False)).order_by(Patient.id.desc()).first()  #db.session.query....
-                    # filtr zwraca tablice rekordow, ale w bazie danych przeszukuje od gory do dolu i dopisuje po kolei, wiec trzeb znalezc ostatni item 
+                    patient = Patient.query.filter((Patient.id < patient_primary_key) & (Patient.pelne_dane == False)).order_by(Patient.id.desc()).first() 
                 elif direction == 1:
                     patient = session.query(Patient).filter(Patient.id > patient_primary_key, Patient.pelne_dane == False).first()
                 else:

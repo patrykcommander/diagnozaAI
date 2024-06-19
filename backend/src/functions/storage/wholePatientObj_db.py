@@ -20,19 +20,17 @@ def createWholePatientObj(src_csv, src_json):
     
     statusJson = PatientData.newPatientData(primary_key, attributes)
 
+    if statusJson[1] == 400:                                    # Creation failed with .JSON file
+        session.delete(patientObj)
+        session.commit()
+        return {"message": f"Patient creation failed"}, 400
+
     if statusJson[1] != 400:
         try:
             attributes = mapCsvToWirowka(src_csv)
             statusCsv = Wirowka.newWirowkaObject(primary_key, attributes)
         except:
             statusCsv = ("Error while parsing .CSV file", 400)
-        
-        
-
-    if statusJson[1] == 400:                                    # Creation failed with .JSON file
-        session.delete(patientObj)
-        session.commit()
-        return {"message": f"Patient creation failed"}, 400
     
     if statusJson[1] != 400 and statusCsv[1] == 400:            # CSV file is failing or has not been received by the server
         return {"message": f"Patient created only with .JSON data."}, 200
